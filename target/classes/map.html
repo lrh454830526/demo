@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+        body,html,#container{
+            width: 100%;
+            height: 100%;
+            margin: 0px
+        }
+    </style>
+    <title>我的旅行计划</title>
+</head>
+<body>
+<div id="container" tabindex="0"></div>
+<script src="https://webapi.amap.com/maps?v=1.4.14&key=4f941da7381312affa475f80d6a7366b"></script>
+<script src="https://webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+        resizeEnable: true,
+        center:[116.480983, 39.989628],
+        zoom:5
+    });
+    AMap.plugin('AMap.ToolBar',function(){
+        var toolbar = new AMap.ToolBar();
+        map.addControl(toolbar)
+    })
+    //获取鼠标当前点击的区域
+    map.on('click', function(e) {
+
+        AMap.service('AMap.Geocoder',function(){//回调函数
+            //实例化Geocoder
+            geocoder = new AMap.Geocoder({
+                city: ""//城市，默认：“全国”
+            });
+            var lnglatXY=[e.lnglat.getLng(), e.lnglat.getLat()];//地图上所标点的坐标
+            geocoder.getAddress(lnglatXY, function(status, result) {
+                if (status === 'complete' && result.info === 'OK') {
+                    //获得了有效的地址信息:
+                    //即，result.regeocode.formattedAddress
+                    //console.log(result);
+                    var province = result.regeocode.addressComponent.province;
+                    console.log(result.regeocode.addressComponent);
+                }else{
+                    var city = '获取失败';
+                    //获取地址失败
+                }
+
+                console.log(city);
+            });
+        })
+    });
+
+
+
+
+    AMap.plugin('AMap.DistrictSearch', function () {
+        var districtSearch = new AMap.DistrictSearch({
+            // 关键字对应的行政区级别，country表示国家
+            level: 'country',
+            //  显示下级行政区级数，1表示返回下一级行政区
+            subdistrict: 1
+        })
+
+        // 搜索所有省/直辖市信息
+        districtSearch.search('中国', function (status, result) {
+            // 查询成功时，result即为对应的行政区信息
+        })
+    });
+
+    AMapUI.load(['ui/geo/DistrictExplorer', 'lib/$'], function(DistrictExplorer, $) {
+        //创建一个实例
+        var districtExplorer = window.districtExplorer = new DistrictExplorer({
+            eventSupport: false, //打开事件支持
+            map: map
+        });
+        //当前聚焦的区域
+        var currentAreaNode = null;
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+</body>
+</html>
